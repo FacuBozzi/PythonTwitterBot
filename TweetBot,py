@@ -1,0 +1,50 @@
+import tweepy
+import random
+import time
+
+# Twitter API credentials
+consumer_key = "B9G6WblD3uDhtuRzraR4W0yFt"
+consumer_secret = "q05ZAtYLa9vIVq4xmX6H7KG1H4kAb9UMC8iWpZPY5mEPHcRmYW"
+access_token="1544359789731389446-Xn6Tk8u9GN7EC3xW1PAhugVFQatA7x"
+access_token_secret="JFiQkzyKcVotcV9gH1lytsOX1aNRjEFNawmVCM8B1qhtW"
+
+# Array of quotes
+quotes = [
+    "quote1",
+    "quote2",
+    "quote3",
+]
+
+# Number of tweets since last repeat
+tweets_since_repeat = 0
+
+# Last tweet
+last_tweet = ""
+
+client = tweepy.Client(consumer_key="consumer_key",
+        consumer_secret="consumer_secret",
+        access_token="access_token",
+        access_token_secret="access_token_secret")
+
+while True:
+    # Select a random quote
+    quote = random.choice(quotes)
+
+    # Check if the quote has been tweeted in the last 3 tweets
+    if quote == last_tweet and tweets_since_repeat < 3:
+        tweets_since_repeat += 1
+        continue
+
+    # Update last tweet and tweets since repeat
+    last_tweet = quote
+    tweets_since_repeat = 0
+
+    # Tweet the quote
+    try:
+        response = client.create_tweet(text=quote)
+        print(f"Tweeted: {quote}")
+    except tweepy.errors.TweepyException as e:
+        print(f"Error: {e}")
+
+    # Wait 8 hours before tweeting again
+    time.sleep(8 * 60 * 60)
